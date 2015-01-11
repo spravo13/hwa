@@ -2,17 +2,17 @@
 version="v0.1"
 
 idle_write(){
-    if [ -f "/tmp/idletime" ]; then
+    if [[ -f "/tmp/idletime" ]]; then
         rm  "/tmp/idletime";
     fi
-    "xprintidle" >> "/tmp/idletime";
-    idle=$(head -1 /tmp/idletime);
+    "xprintidle" >> "/tmp/idletime";        #idle time in miliseconds
+    idle=$(head -1 /tmp/idletime);          #set $idle as time
 }
 
 idle_check(){
     idle_write
     echo $idle
-    if [ $idle -gt 10 ]; then
+    if [[ $idle -gt 10 ]]; then             #if idle is greater than x(#)
         timeout=true;
         echo "its over";
     else
@@ -21,10 +21,31 @@ idle_check(){
     fi
 }
 
+user_prompt(){
+    echo "please enter the password or the machine with shutdown"
+    sudo true;
+    if [[ $? = 0 ]]; then                   #passed
+        auth=true;
+        echo "you passed!";
+    else                                    #failed
+        auth=false;
+        echo "you failed!"
+    fi
+}
+
+main() {
+    #idle_check
+    user_prompt
+}
+    
+
 
 
 case "$1" in
     -i)
         idle_check
+        ;;
+    *)
+        main
         ;;
 esac
