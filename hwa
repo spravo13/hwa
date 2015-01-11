@@ -11,26 +11,21 @@ idle_write(){
 
 idle_check(){
     idle_write
-    echo $idle
-    if [[ $idle -gt 1000 ]]; then           #if idle is greater than x(#)
+    if [[ $idle -gt 1 ]]; then           #if idle is greater than x(#)
         timeout="yes";
-        echo "its over";
     else
         timeout="no";
-        echo "its under";
     fi
 }
 
 user_prompt(){
-    sudo shutdown -h +1;                    #shutdown and halt in 1 minute
+    ( sudo shutdown -h +1i )&                    #shutdown and halt in 1 minute
     echo "please enter the password or the machine with shutdown"
     sudo true;
     if [[ $? = 0 ]]; then                   #passed
         auth="yes";
-        echo "you passed!";
     else                                    #failed
         auth="no";
-        echo "you failed!";
     fi
 }
 
