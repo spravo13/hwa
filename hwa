@@ -22,6 +22,7 @@ idle_check(){
 }
 
 user_prompt(){
+    shutdown -h +1;                         #shutdown and halt in 1 minute
     echo "please enter the password or the machine with shutdown"
     sudo true;
     if [[ $? = 0 ]]; then                   #passed
@@ -29,22 +30,25 @@ user_prompt(){
         echo "you passed!";
     else                                    #failed
         auth=false;
-        echo "you failed!"
+        echo "you failed!";
     fi
 }
 
 main() {
-    #idle_check
-    user_prompt
+    idle_check
+    if [[ $timeout==true ]]; then
+        user_prompt
+        if [[ $auth==false ]]; then
+            shutdown -c;
+            shutdown -h;
+        else
+            shutdown -c;
+            exit;
+        fi
+    fi
 }
-    
-
-
 
 case "$1" in
-    -i)
-        idle_check
-        ;;
     *)
         main
         ;;
