@@ -1,2 +1,30 @@
 #!/usr/bin/env bash
 version="v0.1"
+
+idle_write(){
+    if [ -f "/tmp/idletime" ]; then
+        rm  "/tmp/idletime";
+    fi
+    "xprintidle" >> "/tmp/idletime";
+    idle=$(head -1 /tmp/idletime);
+}
+
+idle_check(){
+    idle_write
+    echo $idle
+    if [ $idle -gt 10 ]; then
+        timeout=true;
+        echo "its over";
+    else
+        timeout=false;
+        echo "its under";
+    fi
+}
+
+
+
+case "$1" in
+    -i)
+        idle_check
+        ;;
+esac
