@@ -19,7 +19,6 @@ idle_check(){
 }
 
 user_prompt(){
-    ( sudo shutdown -h +1i )&                    #shutdown and halt in 1 minute
     echo "please enter the password or the machine with shutdown"
     sudo true;
     if [[ $? = 0 ]]; then                   #passed
@@ -31,11 +30,12 @@ user_prompt(){
 
 main() {
     idle_check
+    sudo shutdown -h +1 &                    #shutdown and halt in 1 minute
     if [[ $timeout == "yes" ]]; then
         user_prompt
         if [[ $auth == "no" ]]; then
             sudo shutdown -c;
-            sudo shutdown -h;
+            sudo shutdown -h now;
         else
             sudo shutdown -c;
             exit;
