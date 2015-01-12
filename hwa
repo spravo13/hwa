@@ -11,7 +11,7 @@ idle_write(){
 
 idle_check(){
     idle_write
-    if [[ $idle -gt 1 ]]; then           #if idle is greater than x(#)
+    if [[ $idle -gt 1 ]]; then              #if idle is greater than 15 minutes
         timeout="yes";
     else
         timeout="no";
@@ -19,6 +19,7 @@ idle_check(){
 }
 
 user_prompt(){
+    sudo shutdown -h +1                     #shutdown and halt in 1 minute
     echo "please enter the password or the machine with shutdown"
     sudo true;
     if [[ $? = 0 ]]; then                   #passed
@@ -30,8 +31,8 @@ user_prompt(){
 
 main() {
     idle_check
-    sudo shutdown -h +1 &                    #shutdown and halt in 1 minute
     if [[ $timeout == "yes" ]]; then
+        `/usr/bin/gnome-terminal`
         user_prompt
         if [[ $auth == "no" ]]; then
             sudo shutdown -c;
