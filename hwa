@@ -2,50 +2,50 @@
 version="v0.1"
 
 idle_write(){
-    if [[ -f "/tmp/idletime" ]]; then
-        rm  "/tmp/idletime";
-    fi
-    "xprintidle" >> "/tmp/idletime";        #idle time in miliseconds
-    idle=$(head -1 /tmp/idletime);          #set $idle as time
+	if [[ -f "/tmp/idletime" ]]; then
+		rm  "/tmp/idletime";
+	fi
+	"xprintidle" >> "/tmp/idletime";		#idle time in miliseconds
+	idle=$(head -1 /tmp/idletime);			#set $idle as time
 }
 
 idle_check(){
-    idle_write
-    if [[ $idle -gt 1 ]]; then              #if idle is greater than 15 minutes
-        timeout="yes";
-    else
-        timeout="no";
-    fi
+	idle_write
+	if [[ $idle -gt 1 ]]; then				#if idle is greater than 15 minutes
+		timeout="yes";
+	else
+		timeout="no";
+	fi
 }
 
 user_prompt(){
-    sudo shutdown -h +1                     #shutdown and halt in 1 minute
-    echo "please enter the password or the machine with shutdown"
-    sudo true;
-    if [[ $? = 0 ]]; then                   #passed
-        auth="yes";
-    else                                    #failed
-        auth="no";
-    fi
+	sudo shutdown -h +1						#shutdown and halt in 1 minute
+	echo "please enter the password or the machine with shutdown"
+	sudo true;
+	if [[ $? = 0 ]]; then					#passed
+		auth="yes";
+	else									#failed
+		auth="no";
+	fi
 }
 
 main() {
-    idle_check
-    if [[ $timeout == "yes" ]]; then
-        `/usr/bin/gnome-terminal`
-        user_prompt
-        if [[ $auth == "no" ]]; then
-            sudo shutdown -c;
-            sudo shutdown -h now;
-        else
-            sudo shutdown -c;
-            exit;
-        fi
-    fi
+	idle_check
+	if [[ $timeout == "yes" ]]; then
+		`/usr/bin/gnome-terminal`
+		user_prompt
+		if [[ $auth == "no" ]]; then
+			sudo shutdown -c;
+			sudo shutdown -h now;
+		else
+			sudo shutdown -c;
+			exit;
+		fi
+	fi
 }
 
 case "$1" in
-    *)
-        main
-        ;;
+	*)
+		main
+		;;
 esac
